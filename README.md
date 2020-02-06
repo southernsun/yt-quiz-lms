@@ -10,6 +10,10 @@ Using the YouTube API, I developed a LMS where you can specify which YouTube vid
 4. Send out invites to users with an additional parameter to the url to keep track of all the users that did your quiz. Parameter to use:  ?email=<email-address>, ex. http://example.com/index.htm?email=a.friend@example.com
   
 - done!
+
+# Example
+
+http://bjorn.kuiper.nu/upload/blog/20200207/index.htm?email=a.friend@example.com
     
 # Example of MVC API Endpoint
  ```csharp
