@@ -1,7 +1,7 @@
 # YouTube Quiz / LMS Library
 
 Most LMS (Learning Management Systems) are too complex or expensive to use for a single video with a couple of questions.
-Using the YouTube API I developed a LMS where you can specify which YouTube video to use and which questions to ask at which point within the video.
+Using the YouTube API, I developed a LMS where you can specify which YouTube video to use and which questions to ask at which point within the video.
 
 # How to use
 1. In index.htm set the videoId to the id of the YouTube video you want to use.
