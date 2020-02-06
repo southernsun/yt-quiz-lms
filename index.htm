@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/slider.css">
+  <!-- <link rel="stylesheet" href="css/all.css"> -->
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script src="js/yt-quiz.js"></script>
+  <script src="js/questions.js"></script>
+</head>  
+<body>
+  <div id="video-container">
+    <div id="header" class="headerbgcolor">
+        <div id="header-title" class="fontcolor">LMS (Learning Management System) - Video</div>
+        <div id="timing" class="fontcolor"><!-- placeholder --></div>
+    </div>
+    <div id="main-content">
+      <div>
+        <input type="button" title="play" id="playbutton">
+      </div>
+      <div id="player" class="videobgcolor"></div>
+    </div>
+    <div id="footer" class="footerbgcolor" style="overflow:hidden;">
+        <div style="height: 15px;"></div>
+        <div class="progress" id="progress" style="cursor: pointer;">
+            <div id="progressbar" class="progress-bar" style="width: 0%;"></div>
+        </div>
+    </div>
+  </div>
+
+  <!-- question modal -->
+  <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="questionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="questionModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Skip</button>
+          <button name="submitAnswer" type="button" class="btn btn-primary" onclick="VerifyAnswer();">Answer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- final score modal -->
+  <div class="modal fade" id="scoreModal" tabindex="-1" role="dialog" aria-labelledby="scoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scoreModalLabel">Score</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          You've scored:</br>
+          <h1>18 out of 18</h1>
+          <h2>a 100% score</h2>
+          <i>You've watched 23% of the video.</i></br>
+          <span style="font-size: 0.75em;">place@holder.com</span></br>
+        </div>
+        <div class="modal-footer">
+          </br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var DEBUG = true;
+
+    /* used for initializing YT player */
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    /* global variables */
+    var player;
+
+    /* load questions */
+    var questions_json = loadQuestions();
+    var questions_array = JSON.parse(questions_json);
+    validateQuestions(questions_array);
+
+    if (DEBUG) console.log('loaded ' + questions_array.questions.length + ' question(s)');
+
+    /* methods */
+    function onYouTubeIframeAPIReady() {
+      // called by YT API on page load
+      player = new YT.Player('player', {
+        videoId: 'UX2SRgr5Wg8',
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          fs: 0,
+          modestbranding: 1,
+          playsinline: 1,
+          disablekb: 1,
+          rel: 0,
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError,
+        }
+      });
+    }
+
+    // call when using mockedplayer...
+    // onYouTubeIframeAPIReady();
+
+    // YT player is loaded and ready to play.
+    function onPlayerReady(event) {
+      if (DEBUG) console.log('onPlayerReady');
+
+      Initialize();
+      
+      UpdateTimer();
+      UpdateProgressBar();
+      HandleProgressBarClick();
+      DisplayQuestionsOnProgressBar(questions_array);
+
+      // setup trigger to continue playing video if skip is clicked
+      $('#questionModal').on('hidden.bs.modal', function (e) {
+        player.playVideo();
+      });
+
+      // set volume;
+      // player.setVolume(100);
+
+      // start video from start;
+      player.seekTo(0, true);
+      player.playVideo();
+    }
+
+    function onPlayerStateChange(event) {
+      switch (event.data){
+        case YT.PlayerState.ENDED:
+          ended();
+          break;
+          case YT.PlayerState.PLAYING:
+          playing();
+          break;
+          case YT.PlayerState.PAUSED:
+          paused();
+          break;
+          case YT.PlayerState.BUFFERING:
+          // ignored
+          break;
+          case YT.PlayerState.CUED:
+          // ignored
+          break;
+      }
+    }
+
+    function onPlayerError(event){
+      console.log("an error occurred, error code: " + event.data);
+      alert('failed to start video.');
+    }
+  </script>
+</body>
+</html>

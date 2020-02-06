@@ -1,0 +1,43 @@
+.one {
+    position: absolute;
+    margin-top: -2px;
+    margin-left: -10px;
+	z-index: 1;
+	height: 20px;
+	width: 20px;
+    border-radius: 25px;
+    border-style: solid;
+}
+
+.primary-color{
+	background-color: #4989bd;
+}
+.success-color{
+	background-color: #5cb85c;
+}
+.danger-color{
+	background-color: #d9534f;
+}
+.warning-color{
+	background-color: #f0ad4e;
+}
+.info-color{
+	background-color: #5bc0de;
+}
+.no-color{
+	background-color: inherit;
+}
+
+.slidecontainer {
+    width: 100%;
+    --height: 100%;
+    margin: 0;
+    --background: #4CAF50;
+    --top: 50%;
+    transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    position: relative;
+}
