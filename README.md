@@ -22,7 +22,6 @@ Using the YouTube API I developed a LMS where you can specify which YouTube vide
             public double viewed { get; set; }
         }
 
-        [AllowCrossSiteJson]
         [System.Web.Mvc.HttpPost]
 
         public async Task<JsonResult> QuizResult(Model model)
