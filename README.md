@@ -12,7 +12,7 @@ Using the YouTube API I developed a LMS where you can specify which YouTube vide
 - done!
     
 # Example of MVC API Endpoint
-<code>
+ ```csharp
         public class Model
         {
             public string email { get; set; }
@@ -25,7 +25,7 @@ Using the YouTube API I developed a LMS where you can specify which YouTube vide
         [AllowCrossSiteJson]
         [System.Web.Mvc.HttpPost]
 
-        public async Task<JsonResult> TheorieResult(Model model)
+        public async Task<JsonResult> QuizResult(Model model)
         {
-        }
-</code>
+        } 
+ ```
