@@ -14,6 +14,9 @@ Using the YouTube API, I developed a LMS where you can specify which YouTube vid
 # Example
 
 http://bjorn.kuiper.nu/upload/blog/20200207/index.htm?email=a.friend@example.com
+
+# What is tracked...
+The user's e-mail address, the number of questions answered, the number of questions answered correctly and the total percentage of the video that the user exactly watched.
     
 # Example of MVC API Endpoint
  ```csharp
